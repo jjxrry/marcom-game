@@ -608,6 +608,11 @@ function end(){
     gameOver = 1;
 }
 
+// might need to add function for refreshModal on minimize/lose focus
+// window.addEventListener('blur', function() {
+//     console.log('Window lost focus');
+// });
+
 window.onload = function(){
     startGame();
     window.addEventListener("resize", openResizeModal);
