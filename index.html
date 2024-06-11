@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport", content="width=device-width, initial-scale=1.0">
+        <title>marcom.attempt</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="easy.css">
+    </head>
+    <body>
+        <button class="invis-button" onclick="toggleEasterEgg()"></button>
+        <div class="easter-egg">
+            <h4 class="hidden-font">you found me! <br> -jerry</h4>
+            <img class="memoji" src="./img/memoji.png" alt="jerry :]">
+        </div>
+        <h1 class="title-card">easy game 🥰</h1>
+        <div class="resize-modal">
+            <h1>please refresh"⌘+R"</h1>
+        </div>
+        <div class="endgame-modal">
+            <h2>*sad trumpet noise* 🎺<br> it's pretty easy right?</h2>
+            <button class="modal-button" onclick="restartGame()">space to restart</button>
+        </div>
+        <div class="game-container">
+            <canvas class="game-board-1"></canvas>
+        </div>
+        <div class="theme-option-container">
+            <button class="theme-button grayscale" onclick="themeDark()">
+            </button>
+            <button class="theme-button sea" onclick="themeSea()">
+            </button>
+            <button class="theme-button desert" onclick="themeDesert()">
+            </button>
+        </div>
+        <div class="controls-menu">
+            <h4 class="controls-title">controls:</h4>
+            <p class="controls-text">wasd or arrow keys</p>
+            <p class="controls-text">bugged? just refresh!</p>
+        </div>
+        <!-- <button onclick="end()">END</button> -->
+    </body>
+    <script src="easy.js"></script>
+</html>
