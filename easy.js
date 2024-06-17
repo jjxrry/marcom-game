@@ -85,11 +85,9 @@ setTimeout(() => {
     console.log(SPAWN_INTERVAL);
 }, 3000)
 
-// setTimeout(() => {
-//     // add incentive object
-//     placeIncentiveObject();
-//     console.log(SPAWN_INCENTIVE);
-// }, 6000)
+function normalizeUpdateFrames(){
+    
+}
 
 function setActiveButton(theme) {
     const buttons = document.querySelectorAll('.theme-button');
@@ -569,6 +567,8 @@ function openEndGameModal(){
 }
 
 function closeResizeModal(){
+    gameOver = 1;
+    document.removeEventListener("keydown", spaceListener);
     if (resizeModal.style.display === "block") {
         resizeModal.style.display = "none";
     } else {
@@ -579,6 +579,7 @@ function closeResizeModal(){
 function openResizeModal(){
     // console.log('Resize Modal Fire')
     gameOver = 1;
+    document.removeEventListener("keydown", spaceListener);
 
     if (modal.style.display === "block") {
         modal.style.display = "none";
