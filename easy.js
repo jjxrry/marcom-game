@@ -77,6 +77,10 @@ let desertButtonSelector = document.querySelector(".desert");
 // endgame restart spacebar listener
 let spaceListener;
 
+// Frame rate normalization
+let lastTime = 0;
+const frameRate = 1000 / 60;
+
 // every 5 seconds, make it harder
 setTimeout(() => {
     if (SPAWN_INTERVAL >= 20) {
@@ -84,10 +88,6 @@ setTimeout(() => {
     }
     console.log(SPAWN_INTERVAL);
 }, 3000)
-
-function normalizeUpdateFrames(){
-    
-}
 
 function setActiveButton(theme) {
     const buttons = document.querySelectorAll('.theme-button');
@@ -177,7 +177,7 @@ function startGame() {
     document.addEventListener("keydown", moveChar);
 }
 
-function update() {
+function update(timestamp) {
     // need to cancel requests on end otherwise little twiggly bits get fragmented and
     // tacked on :)
     if (gameOver) {
@@ -185,93 +185,97 @@ function update() {
         return;
     }
 
-    requestAnimationFrame(update);
+    if (timestamp - lastTime >= frameRate) {
+        lastTime = timestamp;
 
-    // clear board
-    context.clearRect(0, 0, board.width, board.height);
-    
-    // char
-    // context.fillRect(char.x, char.y, char.width, char.height);
-    // circles instead
-    context.beginPath();
-    context.arc(char.x, char.y, char.width / 2, 0, 2 * Math.PI);
-    context.fillStyle = "black";
-    context.fill();
-    context.closePath();
-    
-    // enemy
-    enemyTopArray.forEach(enemy => {
-        // adjust the enemy trajectory here
-        // this is where we add the bounce functionality, and random x/y velocities
-        enemy.y += enemy.dy;
-
-        // draw the enemy
-        // context.fillStyle="black";
-        // context.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
-
+        // clear board
+        context.clearRect(0, 0, board.width, board.height);
+        
+        // char
+        // context.fillRect(char.x, char.y, char.width, char.height);
         // circles instead
         context.beginPath();
-        context.arc(enemy.x, enemy.y, enemy.width / 2, 0, 2 * Math.PI);
+        context.arc(char.x, char.y, char.width / 2, 0, 2 * Math.PI);
         context.fillStyle = "black";
         context.fill();
         context.closePath();
         
-        if (detectCollision(char, enemy)) {
-            gameOver = true;
-            openEndGameModal();
-        }
-    });
-    
-    enemySideArray.forEach(enemy => {
-        // adjust the enemy trajectory here
-        // we can randomize whether these spawn from the right or the left
-        // side = 0 is left
-        if (enemy.side === 0) {
-            enemy.x += enemy.dx;
-        } else {
-            enemy.x -= enemy.dx;
-        }
-        // context.fillStyle="black";
-        // context.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+        // enemy
+        enemyTopArray.forEach(enemy => {
+            // adjust the enemy trajectory here
+            // this is where we add the bounce functionality, and random x/y velocities
+            enemy.y += enemy.dy;
 
-        // circles instead
-        context.beginPath();
-        context.arc(enemy.x, enemy.y, enemy.width / 2, 0, 2 * Math.PI);
+            // draw the enemy
+            // context.fillStyle="black";
+            // context.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+
+            // circles instead
+            context.beginPath();
+            context.arc(enemy.x, enemy.y, enemy.width / 2, 0, 2 * Math.PI);
+            context.fillStyle = "black";
+            context.fill();
+            context.closePath();
+            
+            if (detectCollision(char, enemy)) {
+                gameOver = true;
+                openEndGameModal();
+            }
+        });
+        
+        enemySideArray.forEach(enemy => {
+            // adjust the enemy trajectory here
+            // we can randomize whether these spawn from the right or the left
+            // side = 0 is left
+            if (enemy.side === 0) {
+                enemy.x += enemy.dx;
+            } else {
+                enemy.x -= enemy.dx;
+            }
+            // context.fillStyle="black";
+            // context.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+
+            // circles instead
+            context.beginPath();
+            context.arc(enemy.x, enemy.y, enemy.width / 2, 0, 2 * Math.PI);
+            context.fillStyle = "black";
+            context.fill();
+            context.closePath();
+            
+            if (detectCollision(char, enemy)) {
+                gameOver = true;
+                openEndGameModal();
+            }
+            console.log("VELOCITY: ", enemyVelocityX);
+        });
+
+        for (let i = incentiveArray.length - 1; i >= 0; i--) {
+            let incentive = incentiveArray[i];
+            // draw the enemy
+            // context.fillStyle="black";
+            // context.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+
+            // circles instead
+            context.beginPath();
+            context.arc(incentive.x, incentive.y, incentive.width / 2, 0, 2 * Math.PI);
+            context.fillStyle = "red";
+            context.fill();
+            context.closePath();
+            
+            if (detectCollision(char, incentive)) {
+                score += 200;
+                incentiveArray.splice(i, 1);
+            }
+        };
+        
+        // score draw + timer counter
         context.fillStyle = "black";
-        context.fill();
-        context.closePath();
-        
-        if (detectCollision(char, enemy)) {
-            gameOver = true;
-            openEndGameModal();
-        }
-        console.log("VELOCITY: ", enemyVelocityX);
-    });
+        context.font = "20px courier";
+        score++;
+        context.fillText(score, 15, 25);
+    }
 
-    for (let i = incentiveArray.length - 1; i >= 0; i--) {
-        let incentive = incentiveArray[i];
-        // draw the enemy
-        // context.fillStyle="black";
-        // context.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
-
-        // circles instead
-        context.beginPath();
-        context.arc(incentive.x, incentive.y, incentive.width / 2, 0, 2 * Math.PI);
-        context.fillStyle = "red";
-        context.fill();
-        context.closePath();
-        
-        if (detectCollision(char, incentive)) {
-            score += 200;
-            incentiveArray.splice(i, 1);
-        }
-    };
-    
-    // score draw + timer counter
-    context.fillStyle = "black";
-    context.font = "20px courier";
-    score++;
-    context.fillText(score, 15, 25);
+    animationFrameRequest = requestAnimationFrame(update);
 }
 
 function moveChar(e) {
